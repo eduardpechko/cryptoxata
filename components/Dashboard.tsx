@@ -12,6 +12,7 @@ interface DashboardProps {
   currentProject: string;
   onEditClick: (transaction: Transaction) => void;
   onAddClick?: () => void;
+  onProjectChange?: (projectId: string | 'ALL') => void;
   theme?: 'dark' | 'light';
 }
 
@@ -22,7 +23,17 @@ const ETHEREAL_ANALYTICS_MAP: Record<string, string> = {
   'Ден': ''
 };
 
-export const Dashboard: React.FC<DashboardProps> = ({ transactions, projects, accounts, currentUser, currentProject, onEditClick, onAddClick, theme = 'light' }) => {
+export const Dashboard: React.FC<DashboardProps> = ({
+  transactions,
+  projects,
+  accounts,
+  currentUser,
+  currentProject,
+  onEditClick,
+  onAddClick,
+  onProjectChange,
+  theme = 'light'
+}) => {
   const [realtimeMetrics, setRealtimeMetrics] = useState<{ tvl?: string, volume24h?: string, openInterest?: string } | null>(null);
   const [isFetchingMetrics, setIsFetchingMetrics] = useState(false);
 
@@ -169,22 +180,53 @@ export const Dashboard: React.FC<DashboardProps> = ({ transactions, projects, ac
   return (
     <div className="space-y-6 pb-24 md:pb-10 animate-slide-up">
       {/* Page Header */}
-      <div className="flex items-end justify-between gap-4">
+      <div className="flex items-end justify-between gap-6 flex-wrap">
         <div>
           <h1 className="font-black text-[2.5rem] tracking-tight text-[#0d0d0b] dark:text-[#f0efec] leading-none">Огляд</h1>
           <p className="font-mono text-xs uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mt-2">
             Аналітика · <span className="text-[#0d0d0b] dark:text-[#f0efec]">{currentUser === 'ALL' ? 'Вся команда' : currentUser}</span>
           </p>
         </div>
-        {onAddClick && (
-          <button
-            onClick={onAddClick}
-            className="flex items-center gap-1.5 bg-[#5dde4a] hover:bg-[#4cc43a] text-[#0d0d0b] font-semibold px-4 py-2 rounded-sm text-sm active:scale-[0.99] transition-all shrink-0 min-h-[40px]"
-          >
-            <Plus size={15} strokeWidth={2.5} />
-            <span>Звіт</span>
-          </button>
-        )}
+        <div className="flex items-center gap-3">
+          {onProjectChange && projects.length > 0 && (
+            <div className="hidden md:flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => onProjectChange('ALL')}
+                className={`inline-flex items-center h-10 px-3.5 rounded-sm font-mono text-[11px] uppercase tracking-widest border transition-colors ${
+                  currentProject === 'ALL'
+                    ? 'bg-[#0d0d0b] text-[#f0efec] border-[#0d0d0b]'
+                    : 'bg-transparent text-[#71716b] border-[#d6d5d0] hover:border-[#a0a09a]'
+                }`}
+              >
+                Всі
+              </button>
+              {projects.map(p => (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => onProjectChange(p.id)}
+                  className={`inline-flex items-center h-10 px-3.5 rounded-sm font-mono text-[11px] uppercase tracking-widest border transition-colors ${
+                    currentProject === p.id
+                      ? 'bg-[#0d0d0b] text-[#f0efec] border-[#0d0d0b]'
+                      : 'bg-transparent text-[#71716b] border-[#d6d5d0] hover:border-[#a0a09a]'
+                  }`}
+                >
+                  {p.ticker || p.name}
+                </button>
+              ))}
+            </div>
+          )}
+          {onAddClick && (
+            <button
+              onClick={onAddClick}
+              className="inline-flex items-center justify-center h-10 px-4 gap-1.5 bg-[#5dde4a] hover:bg-[#4cc43a] text-[#0d0d0b] font-semibold rounded-sm text-sm active:scale-[0.99] transition-all shrink-0"
+            >
+              <Plus size={15} strokeWidth={2.5} />
+              <span>Звіт</span>
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
@@ -192,28 +234,30 @@ export const Dashboard: React.FC<DashboardProps> = ({ transactions, projects, ac
         <div className="lg:col-span-8 flex flex-col gap-5">
           {/* Stat Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Points */}
-            <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-5 flex flex-col justify-between min-h-[130px]">
-              <p className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">Всього поінтів</p>
-              <div>
-                <div className="font-mono font-black text-3xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight">{formatNumber(stats.totalPoints)}</div>
-                <div className="font-mono text-[11px] uppercase tracking-widest text-[#15700a] dark:text-[#5dde4a] mt-1">PTS</div>
+            {/* Points — Hero card: inverted for pre-attentive dominance */}
+            <div className="bg-[#0d0d0b] dark:bg-[#1a1a18] border border-[#2a2a28] rounded-sm corner-mark relative p-5 flex flex-col justify-between min-h-[130px]">
+              <p className="font-mono text-[11px] uppercase tracking-widest text-[#8a8a82]">Всього поінтів</p>
+              <div className="mt-1.5 space-y-1">
+                <div className="font-mono font-black text-3xl md:text-4xl text-[#5dde4a] tracking-tight">{formatNumber(stats.totalPoints)}</div>
+                <div className="font-mono text-[11px] uppercase tracking-widest text-[#5dde4a]">PTS</div>
               </div>
             </div>
-            {/* Spent */}
+            {/* Spent — cost/outflow semantic: red matches comparison table pattern */}
             <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-5 flex flex-col justify-between min-h-[130px]">
               <p className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">Витрачено</p>
-              <div>
-                <div className="font-mono font-black text-3xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight">{formatCurrency(stats.totalSpent)}</div>
-                <div className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] mt-1">USD</div>
+              <div className="mt-1.5 space-y-1">
+                <div className="font-mono font-black text-3xl md:text-4xl text-[#c03030] dark:text-[#f08080] tracking-tight">{formatCurrency(stats.totalSpent)}</div>
+                <div className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">USD сумарно</div>
               </div>
             </div>
             {/* Cost per point */}
             <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-5 flex flex-col justify-between min-h-[130px]">
               <p className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">Ціна поінта</p>
-              <div>
-                <div className="font-mono font-black text-3xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight">{stats.avgCost === 0 ? '$0.00' : `$${stats.avgCost.toFixed(4)}`}</div>
-                <div className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] mt-1">за PTS</div>
+              <div className="mt-1.5 space-y-1">
+                <div className="font-mono font-black text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight">
+                  {stats.avgCost === 0 ? '$0.00' : `$${stats.avgCost.toFixed(4)}`}
+                </div>
+                <div className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">за PTS</div>
               </div>
             </div>
           </div>
@@ -222,14 +266,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ transactions, projects, ac
           <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-5">
             <div className="mb-4">
               <h3 className="font-black text-base text-[#0d0d0b] dark:text-[#f0efec] tracking-tight">Команда</h3>
-              <p className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mt-0.5">Порівняння учасників · {currentProject === 'ALL' ? 'Всі проєкти' : (activeProject?.name || currentProject)}</p>
             </div>
 
             {/* Record mini-cards */}
             <div className="grid grid-cols-3 gap-3 mb-4">
               {teamStats.maxPoints && (
                 <div className="bg-[#e8e8e4] dark:bg-[#1a1a18] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm p-3">
-                  <p className="font-mono text-[9px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">🏆 Найбільше поінтів</p>
+                  <p className="font-mono text-[9px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">Найбільше поінтів</p>
                   <div className="flex items-center gap-2">
                     <div className="rounded-sm overflow-hidden shrink-0 border border-[#d6d5d0] dark:border-[#2a2a28]">
                       <UserAvatar userId={teamStats.maxPoints.userId} size={28} />
@@ -241,7 +284,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ transactions, projects, ac
               )}
               {teamStats.minCost && (
                 <div className="bg-[#e8e8e4] dark:bg-[#1a1a18] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm p-3">
-                  <p className="font-mono text-[9px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">💰 Найдешевший PTS</p>
+                  <p className="font-mono text-[9px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">Найдешевший PTS</p>
                   <div className="flex items-center gap-2">
                     <div className="rounded-sm overflow-hidden shrink-0 border border-[#d6d5d0] dark:border-[#2a2a28]">
                       <UserAvatar userId={teamStats.minCost.userId} size={28} />
@@ -253,7 +296,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ transactions, projects, ac
               )}
               {teamStats.minSpent && (
                 <div className="bg-[#e8e8e4] dark:bg-[#1a1a18] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm p-3">
-                  <p className="font-mono text-[9px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">🪙 Мінімум витрат</p>
+                  <p className="font-mono text-[9px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">Мінімум витрат</p>
                   <div className="flex items-center gap-2">
                     <div className="rounded-sm overflow-hidden shrink-0 border border-[#d6d5d0] dark:border-[#2a2a28]">
                       <UserAvatar userId={teamStats.minSpent.userId} size={28} />
@@ -278,7 +321,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ transactions, projects, ac
                       <UserAvatar userId={u.userId} size={20} />
                     </div>
                     <span className="font-mono text-[9px] uppercase tracking-widest font-bold text-[#0d0d0b] dark:text-[#f0efec]">{u.userId}</span>
-                    {teamStats.maxPoints?.userId === u.userId && <span className="text-[11px] leading-none">🏆</span>}
                   </div>
                 ))}
               </div>
@@ -308,7 +350,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ transactions, projects, ac
               ].map((row, rowIdx, arr) => (
                 <div key={row.label} className={`grid grid-cols-4 ${rowIdx < arr.length - 1 ? 'border-b border-[#d6d5d0] dark:border-[#2a2a28]' : ''}`}>
                   <div className="px-3 py-2.5 flex items-center">
-                    <span className="font-mono text-[11px] text-[#71716b] dark:text-[#8a8a82]">{row.label}</span>
+                    <span className={`font-mono text-[11px] ${row.label === 'Поінти' ? 'text-[#15700a] dark:text-[#5dde4a]' : 'text-[#71716b] dark:text-[#8a8a82]'}`}>{row.label}</span>
                   </div>
                   {teamStats.perUser.map(u => {
                     const isBest = row.getBest(u);

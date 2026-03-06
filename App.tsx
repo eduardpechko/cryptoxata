@@ -260,7 +260,7 @@ export const App: React.FC = () => {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `flex items-center gap-2 px-3.5 py-2 text-sm font-medium transition-colors rounded-sm ${
+                `flex items-center gap-2 h-10 px-3.5 text-sm font-medium transition-colors rounded-sm ${
                   isActive
                     ? 'text-[#0d0d0b] dark:text-[#f0efec] bg-[#e8e8e4] dark:bg-[#2a2a28]'
                     : 'text-[#71716b] dark:text-[#8a8a82] hover:text-[#0d0d0b] dark:hover:text-[#f0efec] hover:bg-[#f0efec] dark:hover:bg-[#1a1a18]'
@@ -273,7 +273,7 @@ export const App: React.FC = () => {
             <NavLink
               to="/simulator"
               className={({ isActive }) =>
-                `flex items-center gap-2 px-3.5 py-2 text-sm font-medium transition-colors rounded-sm ${
+                `flex items-center gap-2 h-10 px-3.5 text-sm font-medium transition-colors rounded-sm ${
                   isActive
                     ? 'text-[#0d0d0b] dark:text-[#f0efec] bg-[#e8e8e4] dark:bg-[#2a2a28]'
                     : 'text-[#71716b] dark:text-[#8a8a82] hover:text-[#0d0d0b] dark:hover:text-[#f0efec] hover:bg-[#f0efec] dark:hover:bg-[#1a1a18]'
@@ -286,7 +286,7 @@ export const App: React.FC = () => {
             <NavLink
               to="/settings"
               className={({ isActive }) =>
-                `flex items-center gap-2 px-3.5 py-2 text-sm font-medium transition-colors rounded-sm ${
+                `flex items-center gap-2 h-10 px-3.5 text-sm font-medium transition-colors rounded-sm ${
                   isActive
                     ? 'text-[#0d0d0b] dark:text-[#f0efec] bg-[#e8e8e4] dark:bg-[#2a2a28]'
                     : 'text-[#71716b] dark:text-[#8a8a82] hover:text-[#0d0d0b] dark:hover:text-[#f0efec] hover:bg-[#f0efec] dark:hover:bg-[#1a1a18]'
@@ -304,44 +304,10 @@ export const App: React.FC = () => {
           {/* Right side controls */}
           <div className="flex items-center gap-2">
 
-            {/* Project Selector */}
-            <div className="relative" ref={projectDropdownRef}>
-              <button
-                onClick={() => setIsProjectDropdownOpen(!isProjectDropdownOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm text-sm text-[#0d0d0b] dark:text-[#f0efec] hover:bg-[#e8e8e4] dark:hover:bg-[#1a1a18] transition-colors"
-              >
-                <Briefcase size={13} className="text-[#71716b] dark:text-[#8a8a82]" />
-                <span className="max-w-[100px] truncate font-medium">{currentProjectName}</span>
-                <ChevronDown size={12} className={`text-[#71716b] transition-transform duration-200 ${isProjectDropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-              {isProjectDropdownOpen && (
-                <div className="absolute top-full right-0 mt-1.5 w-52 bg-[#f5f5f0] dark:bg-[#141412] rounded-sm border border-[#d6d5d0] dark:border-[#2a2a28] p-1 animate-scale-in origin-top-right z-50">
-                  <button
-                    onClick={() => { setCurrentProjectFilter('ALL'); setIsProjectDropdownOpen(false); }}
-                    className="w-full flex items-center justify-between px-3 py-2 text-sm text-[#71716b] dark:text-[#8a8a82] hover:text-[#0d0d0b] dark:hover:text-[#f0efec] hover:bg-[#f0efec] dark:hover:bg-[#1a1a18] transition-colors rounded-sm"
-                  >
-                    <span>Всі проекти</span>
-                    {currentProjectFilter === 'ALL' && <Check size={13} className="text-[#5dde4a]" />}
-                  </button>
-                  <div className="h-px bg-[#d6d5d0] dark:bg-[#2a2a28] my-1" />
-                  {data.projects.map(p => (
-                    <button
-                      key={p.id}
-                      onClick={() => { setCurrentProjectFilter(p.id); setIsProjectDropdownOpen(false); }}
-                      className="w-full flex items-center justify-between px-3 py-2 text-sm text-[#71716b] dark:text-[#8a8a82] hover:text-[#0d0d0b] dark:hover:text-[#f0efec] hover:bg-[#f0efec] dark:hover:bg-[#1a1a18] transition-colors rounded-sm"
-                    >
-                      <span>{p.name}</span>
-                      {currentProjectFilter === p.id && <Check size={13} className="text-[#5dde4a]" />}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="w-11 h-11 flex items-center justify-center rounded-sm text-[#71716b] dark:text-[#8a8a82] hover:text-[#0d0d0b] dark:hover:text-[#f0efec] hover:bg-[#e8e8e4] dark:hover:bg-[#2a2a28] transition-colors"
+              className="min-w-[44px] h-10 flex items-center justify-center rounded-sm text-[#71716b] dark:text-[#8a8a82] hover:text-[#0d0d0b] dark:hover:text-[#f0efec] hover:bg-[#e8e8e4] dark:hover:bg-[#2a2a28] transition-colors"
               title={theme === 'dark' ? '[ LIGHT ]' : '[ DARK ]'}
               aria-label={theme === 'dark' ? 'Переключити на світлу тему' : 'Переключити на темну тему'}
             >
@@ -352,7 +318,7 @@ export const App: React.FC = () => {
             <div className="relative" ref={userDropdownRef}>
               <button
                 onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-                className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm hover:bg-[#e8e8e4] dark:hover:bg-[#2a2a28] transition-colors"
+                className="h-10 flex items-center gap-2 pl-1.5 pr-2.5 border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm hover:bg-[#e8e8e4] dark:hover:bg-[#2a2a28] transition-colors"
               >
                 <div className="w-6 h-6 rounded-sm overflow-hidden border border-[#d6d5d0] dark:border-[#2a2a28] shrink-0">
                   <UserAvatar userId={currentUserFilter} size={24} />
@@ -448,35 +414,6 @@ export const App: React.FC = () => {
 
         {/* Main content */}
         <main className="max-w-[1400px] mx-auto px-4 sm:px-6 py-8 lg:pt-[calc(3.5rem+2rem)] pb-28 lg:pb-8">
-          {/* Mobile Project Filter Bar */}
-          <div className="lg:hidden overflow-x-auto no-scrollbar -mx-4 px-4 mb-6">
-            <div className="flex gap-2 pb-1">
-              <button
-                onClick={() => setCurrentProjectFilter('ALL')}
-                className={`shrink-0 px-3 py-2 rounded-sm font-mono text-[11px] uppercase tracking-widest border transition-colors min-h-[44px] ${
-                  currentProjectFilter === 'ALL'
-                    ? 'bg-[#0d0d0b] dark:bg-[#f0efec] text-[#f0efec] dark:text-[#0d0d0b] border-[#0d0d0b] dark:border-[#f0efec]'
-                    : 'bg-transparent text-[#71716b] dark:text-[#8a8a82] border-[#d6d5d0] dark:border-[#2a2a28]'
-                }`}
-              >
-                Всі
-              </button>
-              {data.projects.map(p => (
-                <button
-                  key={p.id}
-                  onClick={() => setCurrentProjectFilter(p.id)}
-                  className={`shrink-0 px-3 py-2 rounded-sm font-mono text-[11px] uppercase tracking-widest border transition-colors min-h-[44px] ${
-                    currentProjectFilter === p.id
-                      ? 'bg-[#0d0d0b] dark:bg-[#f0efec] text-[#f0efec] dark:text-[#0d0d0b] border-[#0d0d0b] dark:border-[#f0efec]'
-                      : 'bg-transparent text-[#71716b] dark:text-[#8a8a82] border-[#d6d5d0] dark:border-[#2a2a28]'
-                  }`}
-                >
-                  {p.name}
-                </button>
-              ))}
-            </div>
-          </div>
-
           <Routes>
             <Route path="/" element={
               <Dashboard
@@ -488,6 +425,7 @@ export const App: React.FC = () => {
                 theme={theme}
                 onEditClick={(t) => { setEditingTransaction(t); setIsModalOpen(true); }}
                 onAddClick={() => { setEditingTransaction(null); setIsModalOpen(true); }}
+                onProjectChange={(projectId) => setCurrentProjectFilter(projectId)}
               />
             } />
             <Route path="/simulator" element={

@@ -64,7 +64,7 @@ export const Simulator: React.FC<SimulatorProps> = ({ transactions, projects, cu
                   const val = parseFloat(e.target.value);
                   if (e.target.value === '' || val >= 0) setPredictionPrice(e.target.value);
                 }}
-                className="bg-transparent font-mono font-bold text-5xl text-[#0d0d0b] dark:text-[#f0efec] focus:outline-none w-full tracking-tighter placeholder-[#71716b]"
+                className="bg-transparent font-mono font-bold text-5xl text-[#0d0d0b] dark:text-[#f0efec] focus:outline-none w-full tracking-tighter placeholder-[#71716b] dark:placeholder-[#8a8a82]"
                 placeholder="0.00"
               />
             </div>

@@ -341,7 +341,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ projects, acco
               step="0.01"
               value={volume}
               onChange={(e) => setVolume(e.target.value)}
-              className="w-full bg-transparent font-mono font-bold text-xl outline-none text-[#0d0d0b] dark:text-[#f0efec] placeholder-[#71716b]/50"
+              className="w-full bg-transparent font-mono font-bold text-xl outline-none text-[#0d0d0b] dark:text-[#f0efec] placeholder-[#71716b]/50 dark:placeholder-[#8a8a82]/50"
               placeholder="0"
             />
             <p className="font-mono text-[11px] text-[#71716b] dark:text-[#8a8a82] mt-2 opacity-60">Торговий об'єм</p>
@@ -355,7 +355,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ projects, acco
               step="0.01"
               value={spent}
               onChange={(e) => setSpent(e.target.value)}
-              className="w-full bg-transparent font-mono font-bold text-xl outline-none text-[#0d0d0b] dark:text-[#f0efec] placeholder-[#71716b]/50"
+              className="w-full bg-transparent font-mono font-bold text-xl outline-none text-[#0d0d0b] dark:text-[#f0efec] placeholder-[#71716b]/50 dark:placeholder-[#8a8a82]/50"
               placeholder="0"
             />
             <p className="font-mono text-[11px] text-[#71716b] dark:text-[#8a8a82] mt-2 opacity-60">Комісії та витрати</p>
