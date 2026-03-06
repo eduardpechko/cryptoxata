@@ -195,8 +195,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 onClick={() => onProjectChange('ALL')}
                 className={`inline-flex items-center h-10 px-3.5 rounded-sm font-mono text-[11px] uppercase tracking-widest border transition-colors ${
                   currentProject === 'ALL'
-                    ? 'bg-[#0d0d0b] text-[#f0efec] border-[#0d0d0b]'
-                    : 'bg-transparent text-[#71716b] border-[#d6d5d0] hover:border-[#a0a09a]'
+                    ? 'bg-[#0d0d0b] text-[#f0efec] border-[#0d0d0b] dark:bg-[#f0efec] dark:text-[#0d0d0b] dark:border-[#f0efec]'
+                    : 'bg-transparent text-[#71716b] border-[#d6d5d0] hover:border-[#a0a09a] dark:text-[#8a8a82] dark:border-[#2a2a28] dark:hover:border-[#4a4a48]'
                 }`}
               >
                 Всі
@@ -208,8 +208,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   onClick={() => onProjectChange(p.id)}
                   className={`inline-flex items-center h-10 px-3.5 rounded-sm font-mono text-[11px] uppercase tracking-widest border transition-colors ${
                     currentProject === p.id
-                      ? 'bg-[#0d0d0b] text-[#f0efec] border-[#0d0d0b]'
-                      : 'bg-transparent text-[#71716b] border-[#d6d5d0] hover:border-[#a0a09a]'
+                      ? 'bg-[#0d0d0b] text-[#f0efec] border-[#0d0d0b] dark:bg-[#f0efec] dark:text-[#0d0d0b] dark:border-[#f0efec]'
+                      : 'bg-transparent text-[#71716b] border-[#d6d5d0] hover:border-[#a0a09a] dark:text-[#8a8a82] dark:border-[#2a2a28] dark:hover:border-[#4a4a48]'
                   }`}
                 >
                   {p.ticker || p.name}
