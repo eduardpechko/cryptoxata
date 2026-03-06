@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { HashRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
 import { LayoutDashboard, Settings, Command, ChevronDown, Check, AlertTriangle, Loader2, Save, FileSpreadsheet, Plus, Zap, Download, Moon, Sun, Briefcase, Wallet } from 'lucide-react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 import { AppState, User, Project, SyncConfig, Transaction, Account } from './types';
 import { loadData, saveData, createTransaction, createAccount, exportDataToJson, exportDataToCsv, subscribeToData } from './services/dataService';
@@ -681,6 +682,7 @@ export const App: React.FC = () => {
         </Modal>
       </div>
       <ToastContainer />
+      <SpeedInsights />
     </Router>
   );
 };
