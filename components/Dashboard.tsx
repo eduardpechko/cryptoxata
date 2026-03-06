@@ -477,33 +477,27 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           </div>
                           {/* Content column */}
                           <div className="flex-1 min-w-0">
-                            {/* Row 1: username (primary) · points (right) */}
-                            <div className="flex items-start justify-between gap-2">
-                              <span className="font-semibold text-sm text-[#0d0d0b] dark:text-[#f0efec] leading-tight">{t.userId}</span>
-                              <div className="text-right shrink-0">
-                                <div className="font-mono font-bold text-[11px] text-[#15700a] dark:text-[#5dde4a] whitespace-nowrap">+{formatNumber(t.points)} PTS</div>
-                                {t.spent > 0 && (
-                                  <div className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82] mt-0.5 whitespace-nowrap">−{formatCurrency(t.spent)}</div>
+                            {/* Row 1: name + project badge + account · points */}
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="flex items-center gap-1.5 min-w-0 flex-wrap">
+                                <span className="font-semibold text-sm text-[#0d0d0b] dark:text-[#f0efec] leading-tight shrink-0">{t.userId}</span>
+                                <span className="font-mono text-[10px] uppercase tracking-wider bg-[#e8e8e4] dark:bg-[#2a2a28] text-[#71716b] dark:text-[#8a8a82] px-1.5 py-0.5 rounded-sm border border-[#d6d5d0] dark:border-[#3a3a38] leading-none shrink-0">
+                                  {project?.name || t.projectId}
+                                </span>
+                                {account?.name && (
+                                  <span className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82] leading-none shrink-0">#{account.name}</span>
                                 )}
                               </div>
+                              <div className="font-mono font-bold text-[11px] text-[#15700a] dark:text-[#5dde4a] whitespace-nowrap shrink-0">+{formatNumber(t.points)} PTS</div>
                             </div>
-                            {/* Row 2: project tag + account handle */}
-                            <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-                              <span className="font-mono text-[10px] uppercase tracking-wider bg-[#e8e8e4] dark:bg-[#2a2a28] text-[#71716b] dark:text-[#8a8a82] px-1.5 py-0.5 rounded-sm border border-[#d6d5d0] dark:border-[#3a3a38] leading-none shrink-0">
-                                {project?.name || t.projectId}
-                              </span>
-                              {account?.name && (
-                                <span className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82] leading-none shrink-0">#{account.name}</span>
-                              )}
-                            </div>
-                            {/* Row 3: period + chevron signifier */}
+                            {/* Row 2: period · spent (inline) + chevron */}
                             <div className="flex items-center justify-between mt-1.5">
                               <span className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82]">
-                                {startFmt} — {endFmt}
+                                {startFmt} — {endFmt}{t.spent > 0 && <span className="text-[#a0a09a] dark:text-[#5a5a58]"> · −{formatCurrency(t.spent)}</span>}
                               </span>
                               <ChevronRight size={12} className="text-[#a0a09a] dark:text-[#8a8a82] group-hover/item:text-[#71716b] dark:group-hover/item:text-[#f0efec] transition-colors shrink-0 ml-1" />
                             </div>
-                            {/* Row 4: note (if any) */}
+                            {/* Row 3: note (if any) */}
                             {t.note && (
                               <p className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82] mt-1.5 leading-relaxed line-clamp-2">
                                 💬 {t.note}
