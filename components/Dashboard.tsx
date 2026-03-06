@@ -103,7 +103,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
     const groups: { label: string; items: Transaction[] }[] = [];
     [...filteredTransactions].reverse().forEach(t => {
       const date = new Date(t.date), today = new Date(), yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
-      let label = date.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' });
+      let label = date.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' });
       if (date.toDateString() === today.toDateString()) label = 'Сьогодні';
       else if (date.toDateString() === yesterday.toDateString()) label = 'Вчора';
       let group = groups.find(g => g.label === label);
@@ -220,7 +220,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           {onAddClick && (
             <button
               onClick={onAddClick}
-              className="inline-flex items-center justify-center h-10 px-4 gap-1.5 bg-[#5dde4a] hover:bg-[#4cc43a] text-[#0d0d0b] font-semibold rounded-sm text-sm active:scale-[0.99] transition-all shrink-0"
+              className="hidden md:inline-flex items-center justify-center h-10 px-4 gap-1.5 bg-[#5dde4a] hover:bg-[#4cc43a] text-[#0d0d0b] font-semibold rounded-sm text-sm active:scale-[0.99] transition-all shrink-0"
             >
               <Plus size={15} strokeWidth={2.5} />
               <span>Звіт</span>
@@ -229,35 +229,62 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
       </div>
 
+      {/* Mobile project filter chips */}
+      {onProjectChange && projects.length > 0 && (
+        <div className="md:hidden flex gap-2 overflow-x-auto -mx-4 px-4 pb-0.5 scrollbar-none">
+          <button
+            type="button"
+            onClick={() => onProjectChange('ALL')}
+            className={`shrink-0 h-8 px-3 rounded-sm font-mono text-[10px] uppercase tracking-widest border transition-colors ${
+              currentProject === 'ALL'
+                ? 'bg-[#0d0d0b] text-[#f0efec] border-[#0d0d0b] dark:bg-[#f0efec] dark:text-[#0d0d0b] dark:border-[#f0efec]'
+                : 'bg-transparent text-[#71716b] border-[#d6d5d0] dark:text-[#8a8a82] dark:border-[#2a2a28]'
+            }`}
+          >Всі</button>
+          {projects.map(p => (
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => onProjectChange(p.id)}
+              className={`shrink-0 h-8 px-3 rounded-sm font-mono text-[10px] uppercase tracking-widest border transition-colors ${
+                currentProject === p.id
+                  ? 'bg-[#0d0d0b] text-[#f0efec] border-[#0d0d0b] dark:bg-[#f0efec] dark:text-[#0d0d0b] dark:border-[#f0efec]'
+                  : 'bg-transparent text-[#71716b] border-[#d6d5d0] dark:text-[#8a8a82] dark:border-[#2a2a28]'
+              }`}
+            >{p.ticker || p.name}</button>
+          ))}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left column — stacked content */}
         <div className="lg:col-span-8 flex flex-col gap-5">
           {/* Stat Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4">
             {/* Points */}
-            <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-5 flex flex-col justify-between min-h-[130px]">
-              <p className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">Всього поінтів</p>
-              <div className="mt-1.5 space-y-1">
-                <div className="font-mono font-black text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight">{formatNumber(stats.totalPoints)}</div>
-                <div className="font-mono text-[11px] uppercase tracking-widest text-[#15700a] dark:text-[#5dde4a]">PTS</div>
+            <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-3 sm:p-5 flex flex-col justify-between min-h-[90px] sm:min-h-[130px]">
+              <p className="font-mono text-[9px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Поінти</p>
+              <div className="mt-1 space-y-0.5">
+                <div className="font-mono font-black text-xl sm:text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight leading-none">{formatNumber(stats.totalPoints)}</div>
+                <div className="font-mono text-[9px] sm:text-[11px] uppercase tracking-widest text-[#15700a] dark:text-[#5dde4a]">PTS</div>
               </div>
             </div>
             {/* Spent */}
-            <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-5 flex flex-col justify-between min-h-[130px]">
-              <p className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">Витрачено</p>
-              <div className="mt-1.5 space-y-1">
-                <div className="font-mono font-black text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight">{formatCurrency(stats.totalSpent)}</div>
-                <div className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">USD сумарно</div>
+            <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-3 sm:p-5 flex flex-col justify-between min-h-[90px] sm:min-h-[130px]">
+              <p className="font-mono text-[9px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Витрачено</p>
+              <div className="mt-1 space-y-0.5">
+                <div className="font-mono font-black text-xl sm:text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight leading-none">{formatCurrency(stats.totalSpent)}</div>
+                <div className="font-mono text-[9px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">USD</div>
               </div>
             </div>
             {/* Cost per point */}
-            <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-5 flex flex-col justify-between min-h-[130px]">
-              <p className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">Ціна поінта</p>
-              <div className="mt-1.5 space-y-1">
-                <div className="font-mono font-black text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight">
+            <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-3 sm:p-5 flex flex-col justify-between min-h-[90px] sm:min-h-[130px]">
+              <p className="font-mono text-[9px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Ціна PTS</p>
+              <div className="mt-1 space-y-0.5">
+                <div className="font-mono font-black text-xl sm:text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight leading-none">
                   {stats.avgCost === 0 ? '$0.00' : `$${stats.avgCost.toFixed(4)}`}
                 </div>
-                <div className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">за PTS</div>
+                <div className="font-mono text-[9px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">за PTS</div>
               </div>
             </div>
           </div>
@@ -272,7 +299,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <div className="grid grid-cols-3 gap-3 mb-4">
               {teamStats.maxPoints && (
                 <div className="bg-[#e8e8e4] dark:bg-[#1a1a18] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm p-3">
-                  <p className="font-mono text-[9px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">Найбільше поінтів</p>
+                  <p className="font-mono text-[9px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">Поінти</p>
                   <div className="flex items-center gap-2">
                     <div className="rounded-sm overflow-hidden shrink-0 border border-[#d6d5d0] dark:border-[#2a2a28]">
                       <UserAvatar userId={teamStats.maxPoints.userId} size={28} />
@@ -284,7 +311,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               )}
               {teamStats.minCost && (
                 <div className="bg-[#e8e8e4] dark:bg-[#1a1a18] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm p-3">
-                  <p className="font-mono text-[9px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">Найдешевший PTS</p>
+                  <p className="font-mono text-[9px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">Ціна PTS</p>
                   <div className="flex items-center gap-2">
                     <div className="rounded-sm overflow-hidden shrink-0 border border-[#d6d5d0] dark:border-[#2a2a28]">
                       <UserAvatar userId={teamStats.minCost.userId} size={28} />
@@ -296,7 +323,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               )}
               {teamStats.minSpent && (
                 <div className="bg-[#e8e8e4] dark:bg-[#1a1a18] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm p-3">
-                  <p className="font-mono text-[9px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">Мінімум витрат</p>
+                  <p className="font-mono text-[9px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">Витрати</p>
                   <div className="flex items-center gap-2">
                     <div className="rounded-sm overflow-hidden shrink-0 border border-[#d6d5d0] dark:border-[#2a2a28]">
                       <UserAvatar userId={teamStats.minSpent.userId} size={28} />
@@ -453,7 +480,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   {/* Gestalt Proximity: date group header with item count for scannability */}
                   <div className="flex items-center justify-between px-1">
                     <h4 className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">{group.label}</h4>
-                    <span className="font-mono text-[11px] text-[#71716b] dark:text-[#8a8a82]">{group.items.length}</span>
+                    <span className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82] bg-[#e8e8e4] dark:bg-[#2a2a28] px-1.5 py-0.5 rounded-sm">{group.items.length}</span>
                   </div>
                   {group.items.map(t => {
                     const account = accounts.find(a => a.id === t.accountId);
@@ -481,9 +508,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             <div className="flex items-center justify-between gap-2">
                               <div className="flex items-center gap-1.5 min-w-0 flex-wrap">
                                 <span className="font-semibold text-sm text-[#0d0d0b] dark:text-[#f0efec] leading-tight shrink-0">{t.userId}</span>
-                                <span className="font-mono text-[10px] uppercase tracking-wider bg-[#e8e8e4] dark:bg-[#2a2a28] text-[#71716b] dark:text-[#8a8a82] px-1.5 py-0.5 rounded-sm border border-[#d6d5d0] dark:border-[#3a3a38] leading-none shrink-0">
-                                  {project?.name || t.projectId}
-                                </span>
+                                <span className="font-mono text-[10px] text-[#a0a09a] dark:text-[#5a5a58] leading-none shrink-0">/ {project?.name || t.projectId}</span>
                                 {account?.name && (
                                   <span className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82] leading-none shrink-0">#{account.name}</span>
                                 )}
