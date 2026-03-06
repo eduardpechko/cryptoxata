@@ -234,19 +234,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="lg:col-span-8 flex flex-col gap-5">
           {/* Stat Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Points — Hero card: inverted for pre-attentive dominance */}
-            <div className="bg-[#0d0d0b] dark:bg-[#1a1a18] border border-[#2a2a28] rounded-sm corner-mark relative p-5 flex flex-col justify-between min-h-[130px]">
-              <p className="font-mono text-[11px] uppercase tracking-widest text-[#8a8a82]">Всього поінтів</p>
+            {/* Points */}
+            <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-5 flex flex-col justify-between min-h-[130px]">
+              <p className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">Всього поінтів</p>
               <div className="mt-1.5 space-y-1">
-                <div className="font-mono font-black text-3xl md:text-4xl text-[#5dde4a] tracking-tight">{formatNumber(stats.totalPoints)}</div>
-                <div className="font-mono text-[11px] uppercase tracking-widest text-[#5dde4a]">PTS</div>
+                <div className="font-mono font-black text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight">{formatNumber(stats.totalPoints)}</div>
+                <div className="font-mono text-[11px] uppercase tracking-widest text-[#15700a] dark:text-[#5dde4a]">PTS</div>
               </div>
             </div>
-            {/* Spent — cost/outflow semantic: red matches comparison table pattern */}
+            {/* Spent */}
             <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-5 flex flex-col justify-between min-h-[130px]">
               <p className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">Витрачено</p>
               <div className="mt-1.5 space-y-1">
-                <div className="font-mono font-black text-3xl md:text-4xl text-[#c03030] dark:text-[#f08080] tracking-tight">{formatCurrency(stats.totalSpent)}</div>
+                <div className="font-mono font-black text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight">{formatCurrency(stats.totalSpent)}</div>
                 <div className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">USD сумарно</div>
               </div>
             </div>
@@ -350,7 +350,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               ].map((row, rowIdx, arr) => (
                 <div key={row.label} className={`grid grid-cols-4 ${rowIdx < arr.length - 1 ? 'border-b border-[#d6d5d0] dark:border-[#2a2a28]' : ''}`}>
                   <div className="px-3 py-2.5 flex items-center">
-                    <span className={`font-mono text-[11px] ${row.label === 'Поінти' ? 'text-[#15700a] dark:text-[#5dde4a]' : 'text-[#71716b] dark:text-[#8a8a82]'}`}>{row.label}</span>
+                    <span className="font-mono text-[11px] text-[#71716b] dark:text-[#8a8a82]">{row.label}</span>
                   </div>
                   {teamStats.perUser.map(u => {
                     const isBest = row.getBest(u);
