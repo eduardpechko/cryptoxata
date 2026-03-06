@@ -502,32 +502,31 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           <div className="w-8 h-8 rounded-sm overflow-hidden border border-[#d6d5d0] dark:border-[#2a2a28] shrink-0 mt-0.5">
                             <UserAvatar userId={t.userId} size={32} />
                           </div>
-                          {/* Content column */}
-                          <div className="flex-1 min-w-0">
-                            {/* Row 1: name + project badge + account · points */}
-                            <div className="flex items-center justify-between gap-2">
-                              <div className="flex items-center gap-1.5 min-w-0 flex-wrap">
+                          {/* Content: left meta + right PTS dominant */}
+                          <div className="flex items-start justify-between gap-3 flex-1 min-w-0">
+                            {/* Left: identity + date */}
+                            <div className="min-w-0 flex flex-col gap-1">
+                              <div className="flex items-center gap-1.5 flex-wrap">
                                 <span className="font-semibold text-sm text-[#0d0d0b] dark:text-[#f0efec] leading-tight shrink-0">{t.userId}</span>
                                 <span className="font-mono text-[10px] text-[#a0a09a] dark:text-[#5a5a58] leading-none shrink-0">/ {project?.name || t.projectId}</span>
                                 {account?.name && (
                                   <span className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82] leading-none shrink-0">#{account.name}</span>
                                 )}
                               </div>
-                              <div className="font-mono font-bold text-[11px] text-[#15700a] dark:text-[#5dde4a] whitespace-nowrap shrink-0">+{formatNumber(t.points)} PTS</div>
+                              <div className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82] flex items-center gap-1.5 flex-wrap">
+                                <span>{startFmt} — {endFmt}</span>
+                                {t.spent > 0 && <span className="text-[#a0a09a] dark:text-[#5a5a58]">· −{formatCurrency(t.spent)}</span>}
+                              </div>
+                              {t.note && (
+                                <p className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82] leading-relaxed line-clamp-1">💬 {t.note}</p>
+                              )}
                             </div>
-                            {/* Row 2: period · spent (inline) + chevron */}
-                            <div className="flex items-center justify-between mt-1.5">
-                              <span className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82]">
-                                {startFmt} — {endFmt}{t.spent > 0 && <span className="text-[#a0a09a] dark:text-[#5a5a58]"> · −{formatCurrency(t.spent)}</span>}
-                              </span>
-                              <ChevronRight size={12} className="text-[#a0a09a] dark:text-[#8a8a82] group-hover/item:text-[#71716b] dark:group-hover/item:text-[#f0efec] transition-colors shrink-0 ml-1" />
+                            {/* Right: PTS — the primary data point */}
+                            <div className="shrink-0 flex flex-col items-end gap-0.5">
+                              <div className="font-mono font-black text-lg leading-none text-[#15700a] dark:text-[#5dde4a]">+{formatNumber(t.points)}</div>
+                              <div className="font-mono text-[9px] uppercase tracking-widest text-[#15700a]/70 dark:text-[#5dde4a]/60">PTS</div>
+                              <ChevronRight size={11} className="text-[#c8c8c2] dark:text-[#3a3a38] group-hover/item:text-[#71716b] dark:group-hover/item:text-[#f0efec] transition-colors mt-0.5" />
                             </div>
-                            {/* Row 3: note (if any) */}
-                            {t.note && (
-                              <p className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82] mt-1.5 leading-relaxed line-clamp-2">
-                                💬 {t.note}
-                              </p>
-                            )}
                           </div>
                         </div>
                       </div>
