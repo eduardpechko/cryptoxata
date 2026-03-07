@@ -17,6 +17,12 @@ interface DashboardProps {
 }
 
 
+const USER_ACCENT: Record<string, string> = {
+  'Ед': '#3b82f6',
+  'Вася': '#10b981',
+  'Ден': '#f97316',
+};
+
 const ETHEREAL_ANALYTICS_MAP: Record<string, string> = {
   'Ед': '0x4a3ed65b03ac47902421beefbe17e4f425788232',
   'Вася': '',
@@ -263,28 +269,28 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div className="grid grid-cols-3 gap-2 sm:gap-4">
             {/* Points */}
             <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-3 sm:p-5 flex flex-col justify-between min-h-[90px] sm:min-h-[130px]">
-              <p className="font-mono text-[9px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Поінти</p>
+              <p className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Поінти</p>
               <div className="mt-1 space-y-0.5">
                 <div className="font-mono font-black text-xl sm:text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight leading-none">{formatNumber(stats.totalPoints)}</div>
-                <div className="font-mono text-[9px] sm:text-[11px] uppercase tracking-widest text-[#15700a] dark:text-[#5dde4a]">PTS</div>
+                <div className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-[#15700a] dark:text-[#5dde4a]">PTS</div>
               </div>
             </div>
             {/* Spent */}
             <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-3 sm:p-5 flex flex-col justify-between min-h-[90px] sm:min-h-[130px]">
-              <p className="font-mono text-[9px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Витрачено</p>
+              <p className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Витрачено</p>
               <div className="mt-1 space-y-0.5">
                 <div className="font-mono font-black text-xl sm:text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight leading-none">{formatCurrency(stats.totalSpent)}</div>
-                <div className="font-mono text-[9px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">USD</div>
+                <div className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">USD</div>
               </div>
             </div>
             {/* Cost per point */}
             <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-3 sm:p-5 flex flex-col justify-between min-h-[90px] sm:min-h-[130px]">
-              <p className="font-mono text-[9px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Ціна PTS</p>
+              <p className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Ціна PTS</p>
               <div className="mt-1 space-y-0.5">
                 <div className="font-mono font-black text-xl sm:text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight leading-none">
                   {stats.avgCost === 0 ? '$0.00' : `$${stats.avgCost.toFixed(4)}`}
                 </div>
-                <div className="font-mono text-[9px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">за PTS</div>
+                <div className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">за PTS</div>
               </div>
             </div>
           </div>
@@ -478,9 +484,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
               {groupedTransactions.map(group => (
                 <div key={group.label} className="space-y-2">
                   {/* Gestalt Proximity: date group header with item count for scannability */}
-                  <div className="flex items-center justify-between px-1">
-                    <h4 className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">{group.label}</h4>
-                    <span className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82] bg-[#e8e8e4] dark:bg-[#2a2a28] px-1.5 py-0.5 rounded-sm">{group.items.length}</span>
+                  <div className="flex items-center gap-2 px-1">
+                    <h4 className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] shrink-0">{group.label}</h4>
+                    <div className="flex-1 h-px bg-[#d6d5d0] dark:bg-[#2a2a28]" />
+                    <span className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82] bg-[#e8e8e4] dark:bg-[#2a2a28] px-1.5 py-0.5 rounded-sm shrink-0">{group.items.length}</span>
                   </div>
                   {group.items.map(t => {
                     const account = accounts.find(a => a.id === t.accountId);
@@ -495,7 +502,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         tabIndex={0}
                         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onEditClick(t); } }}
                         aria-label={`${t.userId} — ${project?.name || 'Запис'}, ${formatNumber(t.points)} поінтів, ${startFmt} — ${endFmt}`}
-                        className="group/item bg-[#f0efec] dark:bg-[#1a1a18] hover:bg-[#e8e8e4] dark:hover:bg-[#2a2a28] border border-[#d6d5d0] dark:border-[#2a2a28] hover:border-[#a0a09a] dark:hover:border-[#3a3a38] p-3 rounded-sm cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-[#5dde4a]/40 focus:border-[#5dde4a]"
+                        className="group/item bg-[#f0efec] dark:bg-[#1a1a18] hover:bg-[#e8e8e4] dark:hover:bg-[#2a2a28] border border-l-2 border-[#d6d5d0] dark:border-[#2a2a28] hover:border-[#a0a09a] dark:hover:border-[#3a3a38] p-3 rounded-sm cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-[#5dde4a]/40 focus:border-[#5dde4a]"
+                        style={{ borderLeftColor: USER_ACCENT[t.userId] || '#d6d5d0' }}
                       >
                         <div className="flex items-start gap-2.5">
                           {/* Avatar — top-aligned */}
@@ -524,7 +532,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             {/* Right: PTS — the primary data point */}
                             <div className="shrink-0 flex flex-col items-end gap-0.5">
                               <div className="font-mono font-black text-lg leading-none text-[#15700a] dark:text-[#5dde4a]">+{formatNumber(t.points)}</div>
-                              <div className="font-mono text-[9px] uppercase tracking-widest text-[#15700a]/70 dark:text-[#5dde4a]/60">PTS</div>
+                              <div className="font-mono text-[10px] uppercase tracking-widest text-[#15700a]/70 dark:text-[#5dde4a]/60">PTS</div>
                               <ChevronRight size={11} className="text-[#c8c8c2] dark:text-[#3a3a38] group-hover/item:text-[#71716b] dark:group-hover/item:text-[#f0efec] transition-colors mt-0.5" />
                             </div>
                           </div>

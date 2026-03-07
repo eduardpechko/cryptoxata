@@ -439,7 +439,7 @@ export const App: React.FC = () => {
             <Route path="/settings" element={
               <div className="max-w-3xl mx-auto space-y-8 animate-slide-up">
                 <div>
-                  <h1 className="font-black text-[2rem] tracking-tight text-[#0d0d0b] dark:text-[#f0efec] leading-none">Налаштування</h1>
+                  <h1 className="font-black text-[2.5rem] tracking-tight text-[#0d0d0b] dark:text-[#f0efec] leading-none">Налаштування</h1>
                   <p className="font-mono text-xs uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mt-2">Керування підключеннями та даними</p>
                 </div>
 
