@@ -289,8 +289,8 @@ export const AccountManager: React.FC<AccountManagerProps> = ({
                     key={c}
                     type="button"
                     onClick={() => setColor(c)}
-                    className={`w-7 h-7 rounded-sm transition-all ${
-                      color === c ? 'ring-2 ring-offset-2 ring-[#0d0d0b] dark:ring-[#f0efec] scale-110' : 'hover:scale-105'
+                    className={`w-7 h-7 rounded-sm transition-all border ${
+                      color === c ? 'ring-2 ring-offset-2 ring-[#0d0d0b] dark:ring-[#f0efec] scale-110 border-transparent' : 'border-[#c8c8c2] dark:border-[#3a3a38] hover:scale-105'
                     }`}
                     style={{ backgroundColor: c }}
                   />

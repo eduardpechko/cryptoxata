@@ -3,6 +3,7 @@ import { User, Project, Transaction, Account } from '../types';
 import { USERS } from '../constants';
 import { Plus, Coins, Wallet, Calendar, ArrowRight, BarChart3, Receipt, Save, Trash2, CheckCircle2, AlertCircle, ChevronLeft, ChevronRight, X, ChevronDown } from 'lucide-react';
 import { ConfirmDialog } from './ui/ConfirmDialog';
+import { Select } from './ui/Select';
 
 interface TransactionFormProps {
   projects: Project[];
@@ -226,12 +227,11 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ projects, acco
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className={labelClass}>Проект</label>
-            <div className="relative">
-              <select value={projectId} onChange={(e) => setProjectId(e.target.value)} className={inputClass + " appearance-none pr-8"}>
-                {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-              </select>
-              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#71716b] pointer-events-none" size={14} />
-            </div>
+            <Select
+              value={projectId}
+              onChange={setProjectId}
+              options={projects.map(p => ({ value: p.id, label: p.name }))}
+            />
             {errors.project && (
               <p className="font-mono text-[11px] text-[#c03030] dark:text-[#f08080] mt-1 flex items-center gap-1">
                 <AlertCircle size={11} /> {errors.project}
@@ -240,12 +240,11 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ projects, acco
           </div>
           <div>
             <label className={labelClass}>Користувач</label>
-            <div className="relative">
-              <select value={userId} onChange={(e) => setUserId(e.target.value as User)} className={inputClass + " appearance-none pr-8"}>
-                {USERS.map(u => <option key={u} value={u}>{u}</option>)}
-              </select>
-              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#71716b] pointer-events-none" size={14} />
-            </div>
+            <Select
+              value={userId}
+              onChange={(v) => setUserId(v as User)}
+              options={USERS.map(u => ({ value: u, label: u }))}
+            />
           </div>
         </div>
 
@@ -263,22 +262,16 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ projects, acco
               </button>
             )}
           </div>
-          <div className="relative">
-            <select
-              value={accountId}
-              onChange={(e) => setAccountId(e.target.value)}
-              className={inputClass + " appearance-none pr-8"}
-              disabled={userAccounts.length === 0}
-            >
-              <option value="">{userAccounts.length === 0 ? 'Немає акаунтів' : 'Оберіть акаунт...'}</option>
-              {userAccounts.map(a => (
-                <option key={a.id} value={a.id}>
-                  {a.name}{a.walletAddress ? ` (${a.walletAddress.slice(0, 6)}...)` : ''}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#71716b] pointer-events-none" size={14} />
-          </div>
+          <Select
+            value={accountId}
+            onChange={setAccountId}
+            disabled={userAccounts.length === 0}
+            placeholder={userAccounts.length === 0 ? 'Немає акаунтів' : 'Оберіть акаунт...'}
+            options={userAccounts.map(a => ({
+              value: a.id,
+              label: a.name + (a.walletAddress ? ` (${a.walletAddress.slice(0, 6)}...)` : ''),
+            }))}
+          />
         </div>
 
         {/* Date Range */}

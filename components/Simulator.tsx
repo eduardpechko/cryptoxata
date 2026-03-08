@@ -100,7 +100,7 @@ export const Simulator: React.FC<SimulatorProps> = ({ transactions, projects, cu
               <span className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">
                 Чистий PnL
               </span>
-              <div className={`flex items-center gap-1.5 px-3 py-1 rounded-sm border font-mono text-[11px] uppercase tracking-wider font-bold bg-[#d6d5d0] dark:bg-[#2a2a28] border-[#d6d5d0] dark:border-[#3a3a38] ${
+              <div className={`flex items-center gap-1.5 px-3 py-1 rounded-sm border font-mono text-[11px] uppercase tracking-widest font-bold bg-[#d6d5d0] dark:bg-[#2a2a28] border-[#d6d5d0] dark:border-[#3a3a38] ${
                 isProfit
                   ? 'text-[#15700a] dark:text-[#5dde4a]'
                   : 'text-[#c03030] dark:text-[#f08080]'
@@ -114,7 +114,7 @@ export const Simulator: React.FC<SimulatorProps> = ({ transactions, projects, cu
             }`}>
               {isProfit ? '+' : ''}{formatCurrency(predictedProfit)}
             </div>
-            <div className={`mt-3 font-mono text-xs ${
+            <div className={`mt-3 font-mono text-[12px] ${
               isProfit ? 'text-[#15700a] dark:text-[#7dde6a]' : 'text-[#c03030] dark:text-[#f08080]'
             }`}>
               Очікувана вартість: {formatCurrency(predictedValue)}

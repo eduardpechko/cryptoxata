@@ -56,7 +56,7 @@ const initSupabase = (config: SyncConfig) => {
 };
 
 // Helper: Merges two arrays of transactions based on ID, preferring the most recently updated one
-const mergeTransactions = (local: Transaction[], remote: Transaction[]): Transaction[] => {
+export const mergeTransactions = (local: Transaction[], remote: Transaction[]): Transaction[] => {
   const map = new Map<string, Transaction>();
   
   // Combine both arrays
@@ -83,7 +83,7 @@ const mergeTransactions = (local: Transaction[], remote: Transaction[]): Transac
   return Array.from(map.values());
 };
 
-const mergeProjects = (local: Project[], remote: Project[]): Project[] => {
+export const mergeProjects = (local: Project[], remote: Project[]): Project[] => {
     const map = new Map<string, Project>();
     INITIAL_PROJECTS.forEach(p => map.set(p.id, p)); // Always ensure hardcoded ones exist
     remote.forEach(p => map.set(p.id, p));
@@ -91,7 +91,7 @@ const mergeProjects = (local: Project[], remote: Project[]): Project[] => {
     return Array.from(map.values());
 };
 
-const mergeAccounts = (local: Account[], remote: Account[]): Account[] => {
+export const mergeAccounts = (local: Account[], remote: Account[]): Account[] => {
     const map = new Map<string, Account>();
     
     const all = [...local, ...remote];

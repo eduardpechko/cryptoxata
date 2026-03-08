@@ -3,7 +3,7 @@ import { HashRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
 import { LayoutDashboard, Settings, Command, ChevronDown, Check, AlertTriangle, Loader2, Save, FileSpreadsheet, Plus, Zap, Download, Moon, Sun, Briefcase, Wallet } from 'lucide-react';
 
 import { AppState, User, Project, SyncConfig, Transaction, Account } from './types';
-import { loadData, saveData, createTransaction, createAccount, exportDataToJson, exportDataToCsv, subscribeToData } from './services/dataService';
+import { loadData, saveData, createTransaction, createAccount, exportDataToJson, exportDataToCsv, subscribeToData, mergeTransactions, mergeProjects, mergeAccounts } from './services/dataService';
 import { USERS } from './constants';
 import { Dashboard } from './components/Dashboard';
 import { Simulator } from './components/Simulator';
@@ -48,6 +48,7 @@ export const App: React.FC = () => {
 
   const isRemoteUpdate = useRef(false);
   const userDropdownRef = useRef<HTMLDivElement>(null);
+  const mobileUserDropdownRef = useRef<HTMLDivElement>(null);
   const projectDropdownRef = useRef<HTMLDivElement>(null);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -85,9 +86,9 @@ export const App: React.FC = () => {
       isRemoteUpdate.current = true;
       setData(prev => ({
         ...prev,
-        transactions: remoteData.transactions,
-        projects: remoteData.projects,
-        accounts: remoteData.accounts || []
+        transactions: mergeTransactions(prev.transactions, remoteData.transactions || []),
+        projects: mergeProjects(prev.projects, remoteData.projects || []),
+        accounts: mergeAccounts(prev.accounts || [], remoteData.accounts || [])
       }));
       setIsSyncing(true);
       setTimeout(() => setIsSyncing(false), 1500);
@@ -120,7 +121,10 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target as Node)) {
+      if (
+        userDropdownRef.current && !userDropdownRef.current.contains(event.target as Node) &&
+        (!mobileUserDropdownRef.current || !mobileUserDropdownRef.current.contains(event.target as Node))
+      ) {
         setIsUserDropdownOpen(false);
       }
       if (projectDropdownRef.current && !projectDropdownRef.current.contains(event.target as Node)) {
@@ -386,28 +390,64 @@ export const App: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={toggleTheme}
-              className="w-11 h-11 flex items-center justify-center rounded-sm bg-[#e8e8e4] dark:bg-[#2a2a28] text-[#71716b] dark:text-[#8a8a82]"
+              className="h-10 w-10 flex items-center justify-center rounded-sm bg-[#e8e8e4] dark:bg-[#2a2a28] text-[#71716b] dark:text-[#8a8a82] hover:text-[#0d0d0b] dark:hover:text-[#f0efec] transition-colors"
               aria-label={theme === 'dark' ? 'Переключити на світлу тему' : 'Переключити на темну тему'}
             >
               {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
             </button>
-            <div className="relative">
-              <div className="flex items-center gap-1.5 bg-[#e8e8e4] dark:bg-[#1a1a18] rounded-sm pl-1 pr-2.5 py-1 border border-[#d6d5d0] dark:border-[#2a2a28]">
-                <div className="w-5 h-5 rounded-sm overflow-hidden border border-[#d6d5d0] dark:border-[#2a2a28] shrink-0">
-                  <UserAvatar userId={currentUserFilter} size={20} />
-                </div>
-                <span className="text-xs font-semibold text-[#0d0d0b] dark:text-[#f0efec]">{currentUserFilter === 'ALL' ? 'Всі' : currentUserFilter}</span>
-                <ChevronDown size={10} className="text-[#71716b]" />
-              </div>
-              <select
-                value={currentUserFilter}
-                onChange={(e) => setCurrentUserFilter(e.target.value as User | 'ALL')}
-                className="absolute inset-0 w-full h-full opacity-0 z-10"
-                aria-label="Вибрати користувача"
+            <div className="relative" ref={mobileUserDropdownRef}>
+              <button
+                onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+                className="h-10 flex items-center gap-2 pl-1.5 pr-2.5 border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm hover:bg-[#e8e8e4] dark:hover:bg-[#2a2a28] transition-colors"
               >
-                <option value="ALL">Всі</option>
-                {USERS.map(u => <option key={u} value={u}>{u}</option>)}
-              </select>
+                <div className="w-6 h-6 rounded-sm overflow-hidden border border-[#d6d5d0] dark:border-[#2a2a28] shrink-0">
+                  <UserAvatar userId={currentUserFilter} size={24} />
+                </div>
+                <span className="text-xs font-semibold text-[#0d0d0b] dark:text-[#f0efec]">
+                  {currentUserFilter === 'ALL' ? 'Всі' : currentUserFilter}
+                </span>
+                <ChevronDown size={11} className={`text-[#71716b] transition-transform duration-200 ${isUserDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {isUserDropdownOpen && (
+                <div className="absolute top-full right-0 mt-1.5 w-48 bg-[#f5f5f0] dark:bg-[#141412] rounded-sm border border-[#d6d5d0] dark:border-[#2a2a28] p-1 animate-scale-in origin-top-right z-50">
+                  <button
+                    onClick={() => { setCurrentUserFilter('ALL'); setIsUserDropdownOpen(false); }}
+                    className="w-full flex items-center justify-between px-3 py-2 text-sm text-[#71716b] dark:text-[#8a8a82] hover:text-[#0d0d0b] dark:hover:text-[#f0efec] hover:bg-[#f0efec] dark:hover:bg-[#1a1a18] transition-colors rounded-sm"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-sm overflow-hidden border border-[#d6d5d0] dark:border-[#2a2a28] shrink-0">
+                        <UserAvatar userId="ALL" size={20} />
+                      </div>
+                      <span>Вся Команда</span>
+                    </div>
+                    {currentUserFilter === 'ALL' && <Check size={13} className="text-[#5dde4a]" />}
+                  </button>
+                  <div className="h-px bg-[#d6d5d0] dark:bg-[#2a2a28] my-1" />
+                  {USERS.map(u => (
+                    <button
+                      key={u}
+                      onClick={() => { setCurrentUserFilter(u); setIsUserDropdownOpen(false); }}
+                      className="w-full flex items-center justify-between px-3 py-2 text-sm text-[#71716b] dark:text-[#8a8a82] hover:text-[#0d0d0b] dark:hover:text-[#f0efec] hover:bg-[#f0efec] dark:hover:bg-[#1a1a18] transition-colors rounded-sm"
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="w-5 h-5 rounded-sm overflow-hidden border border-[#d6d5d0] dark:border-[#2a2a28] shrink-0">
+                          <UserAvatar userId={u} size={20} />
+                        </div>
+                        <span>{u}</span>
+                      </div>
+                      {currentUserFilter === u && <Check size={13} className="text-[#5dde4a]" />}
+                    </button>
+                  ))}
+                  <div className="h-px bg-[#d6d5d0] dark:bg-[#2a2a28] my-1" />
+                  <button
+                    onClick={() => { setIsAccountManagerOpen(true); setIsUserDropdownOpen(false); }}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[#0d0d0b] dark:text-[#f0efec] hover:bg-[#f0efec] dark:hover:bg-[#1a1a18] transition-colors rounded-sm font-medium"
+                  >
+                    <Wallet size={14} className="text-[#71716b]" />
+                    <span>Керування акаунтами</span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -477,7 +517,7 @@ export const App: React.FC = () => {
                         id="syncEnabled"
                         checked={syncForm.enabled}
                         onChange={e => setSyncForm({ ...syncForm, enabled: e.target.checked })}
-                        className="w-4 h-4 rounded-sm border-[#d6d5d0] dark:border-[#2a2a28] text-[#5dde4a] focus:ring-[#5dde4a] focus:ring-offset-0"
+                        className="w-4 h-4 rounded-sm border-[#d6d5d0] dark:border-[#2a2a28] accent-[#5dde4a] focus:ring-[#5dde4a] focus:ring-offset-0"
                       />
                       <label htmlFor="syncEnabled" className="text-sm font-semibold cursor-pointer text-[#0d0d0b] dark:text-[#f0efec]">Активувати синхронізацію</label>
                     </div>

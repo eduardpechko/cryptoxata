@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { Select } from '../ui/Select';
 import {
   Wallet, RefreshCw, AlertCircle, ShieldCheck,
   ExternalLink, TrendingUp, Layers, Lock, Gem, LogOut, Monitor, ArrowRight
@@ -409,15 +410,12 @@ export const EtherealDashboard: React.FC = () => {
              </div>
 
              {subaccounts.length > 0 && (
-                 <select
+                 <Select
                     value={selectedSubaccount}
-                    onChange={(e) => setSelectedSubaccount(e.target.value)}
-                    className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] text-sm font-mono py-1.5 px-3 rounded-sm text-[#0d0d0b] dark:text-[#f0efec] focus:outline-none focus:border-[#5dde4a]"
-                 >
-                     {subaccounts.map(s => (
-                         <option key={s.id} value={s.id}>Sub: {s.id.slice(0,8)}...</option>
-                     ))}
-                 </select>
+                    onChange={setSelectedSubaccount}
+                    options={subaccounts.map(s => ({ value: s.id, label: `Sub: ${s.id.slice(0,8)}...` }))}
+                    className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm px-3 py-1.5 text-sm font-mono text-[#0d0d0b] dark:text-[#f0efec] focus:border-[#5dde4a] focus:outline-none transition-colors"
+                 />
              )}
 
             <button

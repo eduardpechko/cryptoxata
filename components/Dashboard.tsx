@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { User, Project, Transaction, MarketMetrics, Account } from '../types';
 import { Card } from './ui/Card';
-import { Loader2, ChevronRight, FileText, Plus } from 'lucide-react';
+import { Loader2, ChevronRight, FileText, Plus, Wallet } from 'lucide-react';
 import { UserAvatar } from './ui/UserAvatar';
 
 interface DashboardProps {
@@ -177,6 +177,20 @@ export const Dashboard: React.FC<DashboardProps> = ({
     return data;
   }, [transactions, currentProject]);
 
+  const accountStats = useMemo(() => {
+    return accounts
+      .filter(a => !a.deleted)
+      .map(acc => {
+        const accTxs = filteredTransactions.filter(t => t.accountId === acc.id);
+        const totalPoints = accTxs.reduce((s, t) => s + (t.points || 0), 0);
+        const totalSpent = accTxs.reduce((s, t) => s + (t.spent || 0), 0);
+        const avgCost = totalPoints > 0 ? totalSpent / totalPoints : 0;
+        return { acc, totalPoints, totalSpent, avgCost, txCount: accTxs.length };
+      })
+      .filter(a => a.txCount > 0)
+      .sort((a, b) => b.totalPoints - a.totalPoints);
+  }, [accounts, filteredTransactions]);
+
   const formatCurrency = (val: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
   const formatNumber = (val: number) => new Intl.NumberFormat('en-US').format(val);
 
@@ -189,7 +203,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       <div className="flex items-end justify-between gap-6 flex-wrap">
         <div>
           <h1 className="font-black text-[2.5rem] tracking-tight text-[#0d0d0b] dark:text-[#f0efec] leading-none">Огляд</h1>
-          <p className="font-mono text-xs uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mt-2">
+          <p className="font-mono text-[12px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mt-2">
             Аналітика · <span className="text-[#0d0d0b] dark:text-[#f0efec]">{currentUser === 'ALL' ? 'Вся команда' : currentUser}</span>
           </p>
         </div>
@@ -269,28 +283,28 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div className="grid grid-cols-3 gap-2 sm:gap-4">
             {/* Points */}
             <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-3 sm:p-5 flex flex-col justify-between min-h-[90px] sm:min-h-[130px]">
-              <p className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Поінти</p>
+              <p className="font-mono text-[11px] sm:text-[12px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Поінти</p>
               <div className="mt-1 space-y-0.5">
                 <div className="font-mono font-black text-xl sm:text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight leading-none">{formatNumber(stats.totalPoints)}</div>
-                <div className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-[#15700a] dark:text-[#5dde4a]">PTS</div>
+                <div className="font-mono text-[11px] sm:text-[12px] uppercase tracking-widest text-[#15700a] dark:text-[#5dde4a]">PTS</div>
               </div>
             </div>
             {/* Spent */}
             <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-3 sm:p-5 flex flex-col justify-between min-h-[90px] sm:min-h-[130px]">
-              <p className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Витрачено</p>
+              <p className="font-mono text-[11px] sm:text-[12px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Витрачено</p>
               <div className="mt-1 space-y-0.5">
                 <div className="font-mono font-black text-xl sm:text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight leading-none">{formatCurrency(stats.totalSpent)}</div>
-                <div className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">USD</div>
+                <div className="font-mono text-[11px] sm:text-[12px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">USD</div>
               </div>
             </div>
             {/* Cost per point */}
             <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-3 sm:p-5 flex flex-col justify-between min-h-[90px] sm:min-h-[130px]">
-              <p className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Ціна PTS</p>
+              <p className="font-mono text-[11px] sm:text-[12px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Ціна PTS</p>
               <div className="mt-1 space-y-0.5">
                 <div className="font-mono font-black text-xl sm:text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight leading-none">
                   {stats.avgCost === 0 ? '$0.00' : `$${stats.avgCost.toFixed(4)}`}
                 </div>
-                <div className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">за PTS</div>
+                <div className="font-mono text-[11px] sm:text-[12px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">за PTS</div>
               </div>
             </div>
           </div>
@@ -305,38 +319,38 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <div className="grid grid-cols-3 gap-3 mb-4">
               {teamStats.maxPoints && (
                 <div className="bg-[#e8e8e4] dark:bg-[#1a1a18] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm p-3">
-                  <p className="font-mono text-[9px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">Поінти</p>
+                  <p className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">Поінти</p>
                   <div className="flex items-center gap-2">
                     <div className="rounded-sm overflow-hidden shrink-0 border border-[#d6d5d0] dark:border-[#2a2a28]">
                       <UserAvatar userId={teamStats.maxPoints.userId} size={28} />
                     </div>
                     <p className="font-mono font-bold text-sm text-[#0d0d0b] dark:text-[#f0efec]">{teamStats.maxPoints.userId}</p>
                   </div>
-                  <p className="font-mono text-xs text-[#15700a] dark:text-[#5dde4a] mt-1.5">{formatNumber(teamStats.maxPoints.totalPoints)} PTS</p>
+                  <p className="font-mono text-[13px] text-[#15700a] dark:text-[#5dde4a] mt-1.5">{formatNumber(teamStats.maxPoints.totalPoints)} PTS</p>
                 </div>
               )}
               {teamStats.minCost && (
                 <div className="bg-[#e8e8e4] dark:bg-[#1a1a18] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm p-3">
-                  <p className="font-mono text-[9px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">Ціна PTS</p>
+                  <p className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">Ціна PTS</p>
                   <div className="flex items-center gap-2">
                     <div className="rounded-sm overflow-hidden shrink-0 border border-[#d6d5d0] dark:border-[#2a2a28]">
                       <UserAvatar userId={teamStats.minCost.userId} size={28} />
                     </div>
                     <p className="font-mono font-bold text-sm text-[#0d0d0b] dark:text-[#f0efec]">{teamStats.minCost.userId}</p>
                   </div>
-                  <p className="font-mono text-xs text-[#15700a] dark:text-[#5dde4a] mt-1.5">${teamStats.minCost.avgCost.toFixed(4)}/PTS</p>
+                  <p className="font-mono text-[13px] text-[#15700a] dark:text-[#5dde4a] mt-1.5">${teamStats.minCost.avgCost.toFixed(4)}/PTS</p>
                 </div>
               )}
               {teamStats.minSpent && (
                 <div className="bg-[#e8e8e4] dark:bg-[#1a1a18] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm p-3">
-                  <p className="font-mono text-[9px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">Витрати</p>
+                  <p className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">Витрати</p>
                   <div className="flex items-center gap-2">
                     <div className="rounded-sm overflow-hidden shrink-0 border border-[#d6d5d0] dark:border-[#2a2a28]">
                       <UserAvatar userId={teamStats.minSpent.userId} size={28} />
                     </div>
                     <p className="font-mono font-bold text-sm text-[#0d0d0b] dark:text-[#f0efec]">{teamStats.minSpent.userId}</p>
                   </div>
-                  <p className="font-mono text-xs text-[#15700a] dark:text-[#5dde4a] mt-1.5">{formatCurrency(teamStats.minSpent.totalSpent)}</p>
+                  <p className="font-mono text-[13px] text-[#15700a] dark:text-[#5dde4a] mt-1.5">{formatCurrency(teamStats.minSpent.totalSpent)}</p>
                 </div>
               )}
             </div>
@@ -346,14 +360,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
               {/* Header */}
               <div className="grid grid-cols-4 bg-[#e8e8e4] dark:bg-[#1a1a18] border-b border-[#d6d5d0] dark:border-[#2a2a28]">
                 <div className="px-3 py-2">
-                  <span className="font-mono text-[9px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">Метрика</span>
+                  <span className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">Метрика</span>
                 </div>
                 {teamStats.perUser.map(u => (
                   <div key={u.userId} className="px-2 py-2 border-l border-[#d6d5d0] dark:border-[#2a2a28] flex items-center gap-1.5">
                     <div className="rounded-sm overflow-hidden shrink-0">
                       <UserAvatar userId={u.userId} size={20} />
                     </div>
-                    <span className="font-mono text-[9px] uppercase tracking-widest font-bold text-[#0d0d0b] dark:text-[#f0efec]">{u.userId}</span>
+                    <span className="font-mono text-[11px] uppercase tracking-widest font-bold text-[#0d0d0b] dark:text-[#f0efec]">{u.userId}</span>
                   </div>
                 ))}
               </div>
@@ -383,14 +397,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
               ].map((row, rowIdx, arr) => (
                 <div key={row.label} className={`grid grid-cols-4 ${rowIdx < arr.length - 1 ? 'border-b border-[#d6d5d0] dark:border-[#2a2a28]' : ''}`}>
                   <div className="px-3 py-2.5 flex items-center">
-                    <span className="font-mono text-[11px] text-[#71716b] dark:text-[#8a8a82]">{row.label}</span>
+                    <span className="font-mono text-[12px] text-[#71716b] dark:text-[#8a8a82]">{row.label}</span>
                   </div>
                   {teamStats.perUser.map(u => {
                     const isBest = row.getBest(u);
                     const isWorst = row.getWorst(u);
                     return (
                       <div key={u.userId} className={`px-3 py-2.5 border-l border-[#d6d5d0] dark:border-[#2a2a28] ${isBest ? 'bg-[#5dde4a]/10 dark:bg-[#5dde4a]/5' : ''}`}>
-                        <span className={`font-mono text-[11px] font-bold ${isBest ? 'text-[#15700a] dark:text-[#5dde4a]' : isWorst ? 'text-[#c03030] dark:text-[#f08080]' : 'text-[#0d0d0b] dark:text-[#f0efec]'}`}>
+                        <span className={`font-mono text-[12px] font-bold ${isBest ? 'text-[#15700a] dark:text-[#5dde4a]' : isWorst ? 'text-[#c03030] dark:text-[#f08080]' : 'text-[#0d0d0b] dark:text-[#f0efec]'}`}>
                           {row.getValue(u)}
                           {isBest && row.bestArrow && <span className="ml-0.5 text-[9px]"> {row.bestArrow}</span>}
                           {isWorst && row.worstArrow && <span className="ml-0.5 text-[9px]"> {row.worstArrow}</span>}
@@ -403,12 +417,70 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
 
+          {/* Account Breakdown */}
+          {accountStats.length > 0 && (
+            <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-5">
+              <div className="mb-4">
+                <h3 className="font-black text-base text-[#0d0d0b] dark:text-[#f0efec] tracking-tight">Акаунти</h3>
+                <p className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mt-0.5">
+                  Статистика · {currentUser === 'ALL' ? 'Вся команда' : currentUser}
+                </p>
+              </div>
+              <div className="border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm overflow-hidden">
+                {/* Header */}
+                <div className="grid grid-cols-5 bg-[#e8e8e4] dark:bg-[#1a1a18] border-b border-[#d6d5d0] dark:border-[#2a2a28]">
+                  <div className="px-3 py-2 col-span-2">
+                    <span className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">Акаунт</span>
+                  </div>
+                  <div className="px-3 py-2 border-l border-[#d6d5d0] dark:border-[#2a2a28]">
+                    <span className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">Поінти</span>
+                  </div>
+                  <div className="px-3 py-2 border-l border-[#d6d5d0] dark:border-[#2a2a28]">
+                    <span className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">Витрачено</span>
+                  </div>
+                  <div className="px-3 py-2 border-l border-[#d6d5d0] dark:border-[#2a2a28]">
+                    <span className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">Ціна / PTS</span>
+                  </div>
+                </div>
+                {/* Rows */}
+                {accountStats.map(({ acc, totalPoints, totalSpent, avgCost }, idx) => (
+                  <div
+                    key={acc.id}
+                    className={`grid grid-cols-5 ${idx < accountStats.length - 1 ? 'border-b border-[#d6d5d0] dark:border-[#2a2a28]' : ''}`}
+                  >
+                    <div className="px-3 py-2.5 col-span-2 flex items-center gap-2 min-w-0">
+                      <div
+                        className="w-2 h-2 rounded-full shrink-0"
+                        style={{ background: acc.color || USER_ACCENT[acc.userId] || '#71716b' }}
+                      />
+                      <div className="min-w-0">
+                        <span className="font-mono text-[12px] font-bold text-[#0d0d0b] dark:text-[#f0efec] truncate block">{acc.name}</span>
+                        <span className="font-mono text-[11px] text-[#71716b] dark:text-[#8a8a82] uppercase tracking-widest">{acc.userId}</span>
+                      </div>
+                    </div>
+                    <div className="px-3 py-2.5 border-l border-[#d6d5d0] dark:border-[#2a2a28] flex items-center">
+                      <span className="font-mono text-[12px] font-bold text-[#15700a] dark:text-[#5dde4a]">{formatNumber(totalPoints)}</span>
+                    </div>
+                    <div className="px-3 py-2.5 border-l border-[#d6d5d0] dark:border-[#2a2a28] flex items-center">
+                      <span className="font-mono text-[12px] text-[#0d0d0b] dark:text-[#f0efec]">{formatCurrency(totalSpent)}</span>
+                    </div>
+                    <div className="px-3 py-2.5 border-l border-[#d6d5d0] dark:border-[#2a2a28] flex items-center">
+                      <span className="font-mono text-[12px] font-bold text-[#0d0d0b] dark:text-[#f0efec]">
+                        {avgCost > 0 ? `$${avgCost.toFixed(4)}` : '—'}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Protocol metrics */}
           <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-5">
             <div className="flex items-center justify-between mb-5">
               <div>
                 <h3 className="font-black text-base text-[#0d0d0b] dark:text-[#f0efec] tracking-tight">Протокол</h3>
-                <p className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mt-0.5">Ринкові дані · DeFiLlama</p>
+                <p className="font-mono text-[12px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mt-0.5">Ринкові дані · DeFiLlama</p>
               </div>
               {isFetchingMetrics && <Loader2 size={14} className="animate-spin text-[#5dde4a]" />}
             </div>
@@ -419,7 +491,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 { label: 'OI', value: displayMetrics.openInterest || '—' },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-[#e8e8e4] dark:bg-[#1a1a18] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm p-3.5">
-                  <p className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">{label}</p>
+                  <p className="font-mono text-[12px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mb-2">{label}</p>
                   {isFetchingMetrics && !realtimeMetrics ? (
                     <div className="h-7 w-24 bg-[#d6d5d0] dark:bg-[#2a2a28] rounded-sm animate-pulse" />
                   ) : (
@@ -441,7 +513,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <div className="px-5 pt-5 pb-4 border-b border-[#d6d5d0] dark:border-[#2a2a28] flex items-start justify-between">
               <div>
                 <h3 className="font-black text-base text-[#0d0d0b] dark:text-[#f0efec] tracking-tight">Історія</h3>
-                <p className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mt-0.5">
+                <p className="font-mono text-[12px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] mt-0.5">
                   [ {filteredTransactions.length} {filteredTransactions.length === 1 ? 'запис' : filteredTransactions.length >= 2 && filteredTransactions.length <= 4 ? 'записи' : 'записів'} ]
                 </p>
               </div>
@@ -466,14 +538,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   </div>
                   <div>
                     <p className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">[ Немає записів ]</p>
-                    <p className="text-xs text-[#71716b] dark:text-[#8a8a82] mt-2 max-w-[200px] leading-relaxed">
+                    <p className="text-[13px] text-[#71716b] dark:text-[#8a8a82] mt-2 max-w-[200px] leading-relaxed">
                       Додайте першу активність, щоб бачити історію тут
                     </p>
                   </div>
                   {onAddClick && (
                     <button
                       onClick={onAddClick}
-                      className="flex items-center gap-1.5 bg-[#0d0d0b] dark:bg-[#f0efec] text-[#f0efec] dark:text-[#0d0d0b] font-semibold px-4 py-2 rounded-sm text-sm hover:opacity-90 active:scale-[0.99] transition-all mt-2"
+                      className="flex items-center gap-1.5 bg-[#0d0d0b] dark:bg-[#f0efec] text-[#f0efec] dark:text-[#0d0d0b] font-semibold px-4 py-2.5 rounded-sm text-sm hover:opacity-90 active:scale-[0.99] transition-all mt-2"
                     >
                       <Plus size={14} strokeWidth={2.5} />
                       Додати запис
@@ -485,9 +557,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div key={group.label} className="space-y-2">
                   {/* Gestalt Proximity: date group header with item count for scannability */}
                   <div className="flex items-center gap-2 px-1">
-                    <h4 className="font-mono text-[11px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] shrink-0">{group.label}</h4>
+                    <h4 className="font-mono text-[12px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] shrink-0">{group.label}</h4>
                     <div className="flex-1 h-px bg-[#d6d5d0] dark:bg-[#2a2a28]" />
-                    <span className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82] bg-[#e8e8e4] dark:bg-[#2a2a28] px-1.5 py-0.5 rounded-sm shrink-0">{group.items.length}</span>
+                    <span className="font-mono text-[11px] text-[#71716b] dark:text-[#8a8a82] bg-[#e8e8e4] dark:bg-[#2a2a28] px-1.5 py-0.5 rounded-sm shrink-0">{group.items.length}</span>
                   </div>
                   {group.items.map(t => {
                     const account = accounts.find(a => a.id === t.accountId);
@@ -505,36 +577,60 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         className="group/item bg-[#f0efec] dark:bg-[#1a1a18] hover:bg-[#e8e8e4] dark:hover:bg-[#2a2a28] border border-l-2 border-[#d6d5d0] dark:border-[#2a2a28] hover:border-[#a0a09a] dark:hover:border-[#3a3a38] p-3 rounded-sm cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-[#5dde4a]/40 focus:border-[#5dde4a]"
                         style={{ borderLeftColor: USER_ACCENT[t.userId] || '#d6d5d0' }}
                       >
-                        <div className="flex items-start gap-2.5">
-                          {/* Avatar — top-aligned */}
-                          <div className="w-8 h-8 rounded-sm overflow-hidden border border-[#d6d5d0] dark:border-[#2a2a28] shrink-0 mt-0.5">
-                            <UserAvatar userId={t.userId} size={32} />
+                        <div className="flex items-center gap-3">
+                          {/* Avatar */}
+                          <div className="w-9 h-9 rounded-sm overflow-hidden border border-[#d6d5d0] dark:border-[#2a2a28] shrink-0">
+                            <UserAvatar userId={t.userId} size={36} />
                           </div>
-                          {/* Content: left meta + right PTS dominant */}
-                          <div className="flex items-start justify-between gap-3 flex-1 min-w-0">
-                            {/* Left: identity + date */}
+
+                          {/* Body */}
+                          <div className="flex items-center justify-between gap-3 flex-1 min-w-0">
+
+                            {/* LEFT — identity + context + date + note */}
                             <div className="min-w-0 flex flex-col gap-1">
-                              <div className="flex items-center gap-1.5 flex-wrap">
-                                <span className="font-semibold text-sm text-[#0d0d0b] dark:text-[#f0efec] leading-tight shrink-0">{t.userId}</span>
-                                <span className="font-mono text-[10px] text-[#a0a09a] dark:text-[#5a5a58] leading-none shrink-0">/ {project?.name || t.projectId}</span>
-                                {account?.name && (
-                                  <span className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82] leading-none shrink-0">#{account.name}</span>
+
+                              {/* Row 1: Name + project badge + account badge — all inline */}
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="font-bold text-[15px] text-[#0d0d0b] dark:text-[#f0efec] leading-none shrink-0">{t.userId}</span>
+                                {project && (
+                                  <span className="font-mono text-[11px] uppercase tracking-widest px-2 py-1 rounded-sm bg-[#e8e8e4] dark:bg-[#2a2a28] text-[#71716b] dark:text-[#8a8a82] border border-[#d6d5d0] dark:border-[#3a3a38] leading-none shrink-0">
+                                    {project.ticker || project.name}
+                                  </span>
+                                )}
+                                {account && (
+                                  <span className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest px-2 py-1 rounded-sm bg-[#e8e8e4] dark:bg-[#2a2a28] text-[#71716b] dark:text-[#8a8a82] border border-[#d6d5d0] dark:border-[#3a3a38] leading-none shrink-0">
+                                    <Wallet size={10} strokeWidth={2} style={{ color: account.color || USER_ACCENT[t.userId] }} />
+                                    {account.name}
+                                  </span>
                                 )}
                               </div>
-                              <div className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82] flex items-center gap-1.5 flex-wrap">
-                                <span>{startFmt} — {endFmt}</span>
-                                {t.spent > 0 && <span className="text-[#a0a09a] dark:text-[#5a5a58]">· −{formatCurrency(t.spent)}</span>}
+
+                              {/* Row 2: Date range */}
+                              <div className="flex items-center gap-1.5 font-mono text-[12px] text-[#71716b] dark:text-[#8a8a82]">
+                                <span>{startFmt}</span>
+                                <span className="text-[#c8c8c2] dark:text-[#3a3a38]">—</span>
+                                <span>{endFmt}</span>
+                                {t.spent > 0 && (
+                                  <>
+                                    <span className="text-[#d6d5d0] dark:text-[#3a3a38]">·</span>
+                                    <span className="text-[#a0a09a] dark:text-[#5a5a58]">−{formatCurrency(t.spent)}</span>
+                                  </>
+                                )}
                               </div>
+
+                              {/* Row 3: Note */}
                               {t.note && (
-                                <p className="font-mono text-[10px] text-[#71716b] dark:text-[#8a8a82] leading-relaxed line-clamp-1">💬 {t.note}</p>
+                                <p className="font-mono text-[12px] text-[#a0a09a] dark:text-[#5a5a58] leading-snug line-clamp-1">💬 {t.note}</p>
                               )}
                             </div>
-                            {/* Right: PTS — the primary data point */}
-                            <div className="shrink-0 flex flex-col items-end gap-0.5">
-                              <div className="font-mono font-black text-lg leading-none text-[#15700a] dark:text-[#5dde4a]">+{formatNumber(t.points)}</div>
-                              <div className="font-mono text-[10px] uppercase tracking-widest text-[#15700a]/70 dark:text-[#5dde4a]/60">PTS</div>
-                              <ChevronRight size={11} className="text-[#c8c8c2] dark:text-[#3a3a38] group-hover/item:text-[#71716b] dark:group-hover/item:text-[#f0efec] transition-colors mt-0.5" />
+
+                            {/* RIGHT — points on a single line */}
+                            <div className="shrink-0 flex items-center gap-1.5">
+                              <span className="font-mono font-black text-xl leading-none text-[#15700a] dark:text-[#5dde4a]">+{formatNumber(t.points)}</span>
+                              <span className="font-mono text-[12px] font-bold uppercase tracking-wider text-[#15700a]/60 dark:text-[#5dde4a]/50 leading-none">PTS</span>
+                              <ChevronRight size={13} className="text-[#c8c8c2] dark:text-[#3a3a38] group-hover/item:text-[#71716b] dark:group-hover/item:text-[#8a8a82] transition-colors ml-0.5" />
                             </div>
+
                           </div>
                         </div>
                       </div>
