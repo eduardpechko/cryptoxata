@@ -486,7 +486,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         {/* UX: Nielsen #1 (System Status), #4 (Consistency), #6 (Recognition), #7 (Flexibility) */}
         {/* Gestalt: Proximity grouping with counts. Signifiers: chevron affordance. */}
         <div className="lg:col-span-4 lg:self-start lg:sticky lg:top-4">
-          <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative flex flex-col overflow-hidden" style={{ maxHeight: 'calc(100vh - 5rem)' }}>
+          <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative flex flex-col lg:overflow-hidden lg:max-h-[calc(100vh-5rem)]">
             {/* Header — Nielsen #1: show count for system status visibility */}
             <div className="px-5 pt-5 pb-4 border-b border-[#d6d5d0] dark:border-[#2a2a28] flex items-start justify-between">
               <div>
@@ -507,7 +507,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </button>
               )}
             </div>
-            <div className="overflow-y-auto flex-1 p-4 space-y-5">
+            <div className="lg:overflow-y-auto lg:flex-1 p-4 space-y-5">
               {/* Nielsen #1: Enhanced empty state — guide user to action */}
               {groupedTransactions.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-16 text-center gap-4">
