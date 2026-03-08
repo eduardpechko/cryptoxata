@@ -209,11 +209,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
         <div className="flex items-center gap-3">
           {onProjectChange && projects.length > 0 && (
-            <div className="hidden md:flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => onProjectChange('ALL')}
-                className={`inline-flex items-center h-10 px-3.5 rounded-sm font-mono text-[11px] uppercase tracking-widest border transition-colors ${
+                className={`inline-flex items-center h-9 px-3 rounded-sm font-mono text-[11px] uppercase tracking-widest border transition-colors ${
                   currentProject === 'ALL'
                     ? 'bg-[#0d0d0b] text-[#f0efec] border-[#0d0d0b] dark:bg-[#f0efec] dark:text-[#0d0d0b] dark:border-[#f0efec]'
                     : 'bg-transparent text-[#71716b] border-[#d6d5d0] hover:border-[#a0a09a] dark:text-[#8a8a82] dark:border-[#2a2a28] dark:hover:border-[#4a4a48]'
@@ -226,7 +226,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   key={p.id}
                   type="button"
                   onClick={() => onProjectChange(p.id)}
-                  className={`inline-flex items-center h-10 px-3.5 rounded-sm font-mono text-[11px] uppercase tracking-widest border transition-colors ${
+                  className={`inline-flex items-center h-9 px-3 rounded-sm font-mono text-[11px] uppercase tracking-widest border transition-colors ${
                     currentProject === p.id
                       ? 'bg-[#0d0d0b] text-[#f0efec] border-[#0d0d0b] dark:bg-[#f0efec] dark:text-[#0d0d0b] dark:border-[#f0efec]'
                       : 'bg-transparent text-[#71716b] border-[#d6d5d0] hover:border-[#a0a09a] dark:text-[#8a8a82] dark:border-[#2a2a28] dark:hover:border-[#4a4a48]'
@@ -249,58 +249,32 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
       </div>
 
-      {/* Mobile project filter chips */}
-      {onProjectChange && projects.length > 0 && (
-        <div className="md:hidden flex gap-2 overflow-x-auto -mx-4 px-4 pb-0.5 scrollbar-none">
-          <button
-            type="button"
-            onClick={() => onProjectChange('ALL')}
-            className={`shrink-0 h-8 px-3 rounded-sm font-mono text-[10px] uppercase tracking-widest border transition-colors ${
-              currentProject === 'ALL'
-                ? 'bg-[#0d0d0b] text-[#f0efec] border-[#0d0d0b] dark:bg-[#f0efec] dark:text-[#0d0d0b] dark:border-[#f0efec]'
-                : 'bg-transparent text-[#71716b] border-[#d6d5d0] dark:text-[#8a8a82] dark:border-[#2a2a28]'
-            }`}
-          >Всі</button>
-          {projects.map(p => (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => onProjectChange(p.id)}
-              className={`shrink-0 h-8 px-3 rounded-sm font-mono text-[10px] uppercase tracking-widest border transition-colors ${
-                currentProject === p.id
-                  ? 'bg-[#0d0d0b] text-[#f0efec] border-[#0d0d0b] dark:bg-[#f0efec] dark:text-[#0d0d0b] dark:border-[#f0efec]'
-                  : 'bg-transparent text-[#71716b] border-[#d6d5d0] dark:text-[#8a8a82] dark:border-[#2a2a28]'
-              }`}
-            >{p.ticker || p.name}</button>
-          ))}
-        </div>
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left column — stacked content */}
         <div className="lg:col-span-8 flex flex-col gap-5">
           {/* Stat Cards */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
             {/* Points */}
-            <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-3 sm:p-5 flex flex-col justify-between min-h-[90px] sm:min-h-[130px]">
+            <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-3 sm:p-5 flex flex-row sm:flex-col items-center sm:items-start justify-between min-h-0 sm:min-h-[130px]">
               <p className="font-mono text-[11px] sm:text-[12px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Поінти</p>
-              <div className="mt-1 space-y-0.5">
+              <div className="sm:mt-1 text-right sm:text-left shrink-0">
                 <div className="font-mono font-black text-xl sm:text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight leading-none">{formatNumber(stats.totalPoints)}</div>
                 <div className="font-mono text-[11px] sm:text-[12px] uppercase tracking-widest text-[#15700a] dark:text-[#5dde4a]">PTS</div>
               </div>
             </div>
             {/* Spent */}
-            <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-3 sm:p-5 flex flex-col justify-between min-h-[90px] sm:min-h-[130px]">
+            <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-3 sm:p-5 flex flex-row sm:flex-col items-center sm:items-start justify-between min-h-0 sm:min-h-[130px]">
               <p className="font-mono text-[11px] sm:text-[12px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Витрачено</p>
-              <div className="mt-1 space-y-0.5">
+              <div className="sm:mt-1 text-right sm:text-left shrink-0">
                 <div className="font-mono font-black text-xl sm:text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight leading-none">{formatCurrency(stats.totalSpent)}</div>
                 <div className="font-mono text-[11px] sm:text-[12px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82]">USD</div>
               </div>
             </div>
             {/* Cost per point */}
-            <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-3 sm:p-5 flex flex-col justify-between min-h-[90px] sm:min-h-[130px]">
+            <div className="bg-[#f5f5f0] dark:bg-[#141412] border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm corner-mark relative p-3 sm:p-5 flex flex-row sm:flex-col items-center sm:items-start justify-between min-h-0 sm:min-h-[130px]">
               <p className="font-mono text-[11px] sm:text-[12px] uppercase tracking-widest text-[#71716b] dark:text-[#8a8a82] leading-tight">Ціна PTS</p>
-              <div className="mt-1 space-y-0.5">
+              <div className="sm:mt-1 text-right sm:text-left shrink-0">
                 <div className="font-mono font-black text-xl sm:text-3xl md:text-4xl text-[#0d0d0b] dark:text-[#f0efec] tracking-tight leading-none">
                   {stats.avgCost === 0 ? '$0.00' : `$${stats.avgCost.toFixed(4)}`}
                 </div>
@@ -356,7 +330,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
 
             {/* Comparison table */}
-            <div className="border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm overflow-hidden">
+            <div className="overflow-x-auto rounded-sm">
+            <div className="border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm overflow-hidden min-w-[400px]">
               {/* Header */}
               <div className="grid grid-cols-4 bg-[#e8e8e4] dark:bg-[#1a1a18] border-b border-[#d6d5d0] dark:border-[#2a2a28]">
                 <div className="px-3 py-2">
@@ -415,6 +390,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </div>
               ))}
             </div>
+            </div>
           </div>
 
           {/* Account Breakdown */}
@@ -426,7 +402,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   Статистика · {currentUser === 'ALL' ? 'Вся команда' : currentUser}
                 </p>
               </div>
-              <div className="border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm overflow-hidden">
+              <div className="overflow-x-auto rounded-sm">
+              <div className="border border-[#d6d5d0] dark:border-[#2a2a28] rounded-sm overflow-hidden min-w-[460px]">
                 {/* Header */}
                 <div className="grid grid-cols-5 bg-[#e8e8e4] dark:bg-[#1a1a18] border-b border-[#d6d5d0] dark:border-[#2a2a28]">
                   <div className="px-3 py-2 col-span-2">
@@ -471,6 +448,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     </div>
                   </div>
                 ))}
+              </div>
               </div>
             </div>
           )}
@@ -574,8 +552,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         tabIndex={0}
                         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onEditClick(t); } }}
                         aria-label={`${t.userId} — ${project?.name || 'Запис'}, ${formatNumber(t.points)} поінтів, ${startFmt} — ${endFmt}`}
-                        className="group/item bg-[#f0efec] dark:bg-[#1a1a18] hover:bg-[#e8e8e4] dark:hover:bg-[#2a2a28] border border-l-2 border-[#d6d5d0] dark:border-[#2a2a28] hover:border-[#a0a09a] dark:hover:border-[#3a3a38] p-3 rounded-sm cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-[#5dde4a]/40 focus:border-[#5dde4a]"
-                        style={{ borderLeftColor: USER_ACCENT[t.userId] || '#d6d5d0' }}
+                        className="group/item bg-[#f0efec] dark:bg-[#1a1a18] hover:bg-[#e8e8e4] dark:hover:bg-[#2a2a28] border border-[#d6d5d0] dark:border-[#2a2a28] hover:border-[#a0a09a] dark:hover:border-[#3a3a38] p-3 rounded-sm cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-[#5dde4a]/40 focus:border-[#5dde4a]"
                       >
                         <div className="flex items-center gap-3">
                           {/* Avatar */}
@@ -584,7 +561,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           </div>
 
                           {/* Body */}
-                          <div className="flex items-center justify-between gap-3 flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-3 flex-1 min-w-0">
 
                             {/* LEFT — identity + context + date + note */}
                             <div className="min-w-0 flex flex-col gap-1">
@@ -606,14 +583,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
                               </div>
 
                               {/* Row 2: Date range */}
-                              <div className="flex items-center gap-1.5 font-mono text-[12px] text-[#71716b] dark:text-[#8a8a82]">
-                                <span>{startFmt}</span>
-                                <span className="text-[#c8c8c2] dark:text-[#3a3a38]">—</span>
-                                <span>{endFmt}</span>
+                              <div className="flex items-center gap-1.5 font-mono text-[12px] text-[#71716b] dark:text-[#8a8a82] flex-wrap">
+                                <span className="whitespace-nowrap">{startFmt} — {endFmt}</span>
                                 {t.spent > 0 && (
                                   <>
                                     <span className="text-[#d6d5d0] dark:text-[#3a3a38]">·</span>
-                                    <span className="text-[#a0a09a] dark:text-[#5a5a58]">−{formatCurrency(t.spent)}</span>
+                                    <span className="whitespace-nowrap text-[#a0a09a] dark:text-[#5a5a58]">−{formatCurrency(t.spent)}</span>
                                   </>
                                 )}
                               </div>
@@ -625,7 +600,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             </div>
 
                             {/* RIGHT — points on a single line */}
-                            <div className="shrink-0 flex items-center gap-1.5">
+                            <div className="shrink-0 flex items-center gap-1.5 self-start mt-0.5">
                               <span className="font-mono font-black text-xl leading-none text-[#15700a] dark:text-[#5dde4a]">+{formatNumber(t.points)}</span>
                               <span className="font-mono text-[12px] font-bold uppercase tracking-wider text-[#15700a]/60 dark:text-[#5dde4a]/50 leading-none">PTS</span>
                               <ChevronRight size={13} className="text-[#c8c8c2] dark:text-[#3a3a38] group-hover/item:text-[#71716b] dark:group-hover/item:text-[#8a8a82] transition-colors ml-0.5" />
